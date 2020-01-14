@@ -86,9 +86,9 @@ def get_token(base_url, validate_certs, auth_realm, client_id,
     payload = dict(
         (k, v) for k, v in temp_payload.items() if v is not None)
     try:
-        r = json.load(open_url(auth_url, method='POST',
+        r = json.loads(open_url(auth_url, method='POST',
                                validate_certs=validate_certs,
-                               data=urlencode(payload)))
+                               data=urlencode(payload)).read().decode('utf-8'))
     except ValueError as e:
         raise KeycloakError(
             'API returned invalid JSON when trying to obtain access token from %s: %s'
@@ -129,8 +129,8 @@ class KeycloakAPI(object):
             clientlist_url += '?clientId=%s' % filter
 
         try:
-            return json.load(open_url(clientlist_url, method='GET', headers=self.restheaders,
-                                      validate_certs=self.validate_certs))
+            return json.loads(open_url(clientlist_url, method='GET', headers=self.restheaders,
+                                      validate_certs=self.validate_certs).read().decode('utf-8'))
         except ValueError as e:
             self.module.fail_json(msg='API returned incorrect JSON when trying to obtain list of clients for realm %s: %s'
                                       % (realm, str(e)))
@@ -160,8 +160,8 @@ class KeycloakAPI(object):
         client_url = URL_CLIENT.format(url=self.baseurl, realm=realm, id=id)
 
         try:
-            return json.load(open_url(client_url, method='GET', headers=self.restheaders,
-                                      validate_certs=self.validate_certs))
+            return json.loads(open_url(client_url, method='GET', headers=self.restheaders,
+                                      validate_certs=self.validate_certs).read().decode('utf-8'))
 
         except HTTPError as e:
             if e.code == 404:
@@ -245,8 +245,8 @@ class KeycloakAPI(object):
         url = URL_CLIENTTEMPLATES.format(url=self.baseurl, realm=realm)
 
         try:
-            return json.load(open_url(url, method='GET', headers=self.restheaders,
-                                      validate_certs=self.validate_certs))
+            return json.loads(open_url(url, method='GET', headers=self.restheaders,
+                                      validate_certs=self.validate_certs).read().decode('utf-8'))
         except ValueError as e:
             self.module.fail_json(msg='API returned incorrect JSON when trying to obtain list of client templates for realm %s: %s'
                                       % (realm, str(e)))
@@ -264,8 +264,8 @@ class KeycloakAPI(object):
         url = URL_CLIENTTEMPLATE.format(url=self.baseurl, id=id, realm=realm)
 
         try:
-            return json.load(open_url(url, method='GET', headers=self.restheaders,
-                                      validate_certs=self.validate_certs))
+            return json.loads(open_url(url, method='GET', headers=self.restheaders,
+                                      validate_certs=self.validate_certs).read().decode('utf-8'))
         except ValueError as e:
             self.module.fail_json(msg='API returned incorrect JSON when trying to obtain client templates %s for realm %s: %s'
                                       % (id, realm, str(e)))
@@ -357,8 +357,8 @@ class KeycloakAPI(object):
         """
         groups_url = URL_GROUPS.format(url=self.baseurl, realm=realm)
         try:
-            return json.load(open_url(groups_url, method="GET", headers=self.restheaders,
-                                      validate_certs=self.validate_certs))
+            return json.loads(open_url(groups_url, method="GET", headers=self.restheaders,
+                                      validate_certs=self.validate_certs).read().decode('utf-8'))
         except Exception as e:
             self.module.fail_json(msg="Could not fetch list of groups in realm %s: %s"
                                       % (realm, str(e)))
@@ -374,8 +374,8 @@ class KeycloakAPI(object):
         """
         groups_url = URL_GROUP.format(url=self.baseurl, realm=realm, groupid=gid)
         try:
-            return json.load(open_url(groups_url, method="GET", headers=self.restheaders,
-                                      validate_certs=self.validate_certs))
+            return json.loads(open_url(groups_url, method="GET", headers=self.restheaders,
+                                      validate_certs=self.validate_certs).read().decode('utf-8'))
 
         except HTTPError as e:
             if e.code == 404:
